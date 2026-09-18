@@ -1,61 +1,55 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="zh-CN">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>在线演示 · 达人库</title>
-<link rel="stylesheet" href="../assets/css/style.css">
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="达人库合成数据交互演示">
+  <meta name="theme-color" content="#0b1020">
+  <title>达人库 · 合成数据演示</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='16' fill='%234f8cff'/%3E%3Ctext x='32' y='41' text-anchor='middle' font-family='Arial' font-size='25' font-weight='700' fill='white'%3EDL%3C/text%3E%3C/svg%3E">
+  <link rel="stylesheet" href="./demo.css">
 </head>
 <body>
-<nav class="nav">
-  <div class="wrap">
-    <span class="brand">Daren<span class="dot">·</span>Library</span>
-    <a class="link" href="../">← 返回首页</a>
-    <span class="spacer"></span>
-    <span class="pill">合成演示数据</span>
-  </div>
-</nav>
-<header class="hero">
-  <div class="wrap">
-    <span class="kicker">● 100% 合成数据 · 非真实业务数据</span>
-    <h1>在线交互演示</h1>
-    <p class="lead">
-      交互式演示正在构建中。当前可浏览合成演示数据集概览；完整交互界面（列表 / 筛选 / 排序 / 看板 / 达人详情 / 对比）即将上线。
-    </p>
-    <div class="cta">
-      <a class="btn btn-primary" href="../">返回项目首页</a>
-      <a class="btn btn-ghost" href="https://github.com/Leo-liz/daren-library">查看源码 ↗</a>
+  <a class="skip-link" href="#app">跳到主要内容</a>
+  <header class="topbar">
+    <div class="shell topbar-inner">
+      <a class="brand" href="#/dashboard" aria-label="达人库演示首页">
+        <span class="brand-mark" aria-hidden="true">DL</span>
+        <span><strong>Daren Library</strong><small>合成数据交互演示</small></span>
+      </a>
+      <nav class="primary-nav" aria-label="主要导航">
+        <a href="#/dashboard" data-nav="dashboard">看板</a>
+        <a href="#/creators" data-nav="creators">达人列表</a>
+        <a href="#/compare" data-nav="compare">对比 <span id="compare-count" class="nav-count">0</span></a>
+      </nav>
+      <div class="synthetic-chip" title="页面只读取仓库内的合成数据">
+        <span class="status-dot" aria-hidden="true"></span>100% 合成数据
+      </div>
     </div>
-  </div>
-</header>
-<section>
-  <div class="wrap">
-    <h2>演示数据概览</h2>
-    <p class="sub">数据由 <code class="inline-code">demo/generate_demo.py</code> 确定性生成（固定随机种子），经真实导入 / 指标 / 评级管线计算。</p>
-    <div id="overview" class="stats"></div>
-    <div class="callout">
-      <p>想体验完整交互？在本地运行 <code class="inline-code">python web.py --db demo.db ...</code>（见首页"快速上手"），
-      或等待本页交互版上线。完整数据契约见 <code class="inline-code">demo/demo_data.json</code>。</p>
+  </header>
+
+  <main id="app" class="shell main" tabindex="-1" aria-live="polite">
+    <section class="loading-state" aria-label="正在加载演示数据">
+      <div class="loading-copy">
+        <span class="eyebrow">正在读取 demo_data.json</span>
+        <h1>准备达人数据</h1>
+        <p id="loading-label">正在加载本地合成数据…</p>
+      </div>
+      <div class="progress-track" aria-hidden="true"><span id="loading-progress"></span></div>
+      <div class="skeleton-grid">
+        <span></span><span></span><span></span><span></span><span></span>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="shell footer-inner">
+      <span>仅用于界面体验，不含真实业务数据</span>
+      <span id="data-timestamp">数据加载中</span>
     </div>
-  </div>
-</section>
-<script>
-fetch('demo_data.json').then(r => r.json()).then(d => {
-  const g = d.dashboard.grade_distribution || {};
-  const el = document.getElementById('overview');
-  const items = [
-    ['达人数', d.dashboard.creator_count],
-    ['Σ 历史 GMV (VND)', (d.dashboard.sum_historical_gmv || 0).toLocaleString()],
-    ['Σ 视频归因 GMV', (d.dashboard.sum_video_attributed_gmv || 0).toLocaleString()],
-    ['Σ 直播归因 GMV', (d.dashboard.sum_live_attributed_gmv || 0).toLocaleString()],
-    ['等级分布', ['S','A','B','C','D'].map(k => (k + ':' + (g[k] || 0))).join(' / ')],
-  ];
-  el.innerHTML = items.map(([l, v]) =>
-    '<div class="stat"><div class="num">' + v + '</div><div class="lbl">' + l + '</div></div>').join('');
-}).catch(e => {
-  document.getElementById('overview').innerHTML =
-    '<div class="callout warn"><p>演示数据加载失败：' + e + '</p></div>';
-});
-</script>
+  </footer>
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+  <noscript><div class="noscript">此演示需要启用 JavaScript。</div></noscript>
+  <script src="./app.js" defer></script>
 </body>
 </html>
