@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>在线演示 · 达人库</title>
+<link rel="stylesheet" href="../assets/css/style.css">
+</head>
+<body>
+<nav class="nav">
+  <div class="wrap">
+    <span class="brand">Daren<span class="dot">·</span>Library</span>
+    <a class="link" href="../">← 返回首页</a>
+    <span class="spacer"></span>
+    <span class="pill">合成演示数据</span>
+  </div>
+</nav>
+<header class="hero">
+  <div class="wrap">
+    <span class="kicker">● 100% 合成数据 · 非真实业务数据</span>
+    <h1>在线交互演示</h1>
+    <p class="lead">
+      交互式演示正在构建中。当前可浏览合成演示数据集概览；完整交互界面（列表 / 筛选 / 排序 / 看板 / 达人详情 / 对比）即将上线。
+    </p>
+    <div class="cta">
+      <a class="btn btn-primary" href="../">返回项目首页</a>
+      <a class="btn btn-ghost" href="https://github.com/Leo-liz/daren-library">查看源码 ↗</a>
+    </div>
+  </div>
+</header>
+<section>
+  <div class="wrap">
+    <h2>演示数据概览</h2>
+    <p class="sub">数据由 <code class="inline-code">demo/generate_demo.py</code> 确定性生成（固定随机种子），经真实导入 / 指标 / 评级管线计算。</p>
+    <div id="overview" class="stats"></div>
+    <div class="callout">
+      <p>想体验完整交互？在本地运行 <code class="inline-code">python web.py --db demo.db ...</code>（见首页"快速上手"），
+      或等待本页交互版上线。完整数据契约见 <code class="inline-code">demo/demo_data.json</code>。</p>
+    </div>
+  </div>
+</section>
+<script>
+fetch('demo_data.json').then(r => r.json()).then(d => {
+  const g = d.dashboard.grade_distribution || {};
+  const el = document.getElementById('overview');
+  const items = [
+    ['达人数', d.dashboard.creator_count],
+    ['Σ 历史 GMV (VND)', (d.dashboard.sum_historical_gmv || 0).toLocaleString()],
+    ['Σ 视频归因 GMV', (d.dashboard.sum_video_attributed_gmv || 0).toLocaleString()],
+    ['Σ 直播归因 GMV', (d.dashboard.sum_live_attributed_gmv || 0).toLocaleString()],
+    ['等级分布', ['S','A','B','C','D'].map(k => (k + ':' + (g[k] || 0))).join(' / ')],
+  ];
+  el.innerHTML = items.map(([l, v]) =>
+    '<div class="stat"><div class="num">' + v + '</div><div class="lbl">' + l + '</div></div>').join('');
+}).catch(e => {
+  document.getElementById('overview').innerHTML =
+    '<div class="callout warn"><p>演示数据加载失败：' + e + '</p></div>';
+});
+</script>
+</body>
+</html>

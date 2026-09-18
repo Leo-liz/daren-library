@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>达人库智能管理与数据分析 · Daren Library</title>
+<meta name="description" content="面向跨境电商达人运营的轻量级本地 Web 应用：Excel 导入 SQLite、可追溯指标计算、S–D 五级评级、数据看板。零第三方依赖，仅 Python 3 标准库。">
+<link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+
+<nav class="nav">
+  <div class="wrap">
+    <span class="brand">Daren<span class="dot">·</span>Library</span>
+    <a class="link" href="#features">功能</a>
+    <a class="link" href="#screens">界面</a>
+    <a class="link" href="#arch">架构</a>
+    <a class="link" href="#metrics">指标与评级</a>
+    <a class="link" href="#start">快速上手</a>
+    <span class="spacer"></span>
+    <a class="link" href="demo/">在线演示 →</a>
+    <a class="pill" href="https://github.com/Leo-liz/daren-library">GitHub ↗</a>
+  </div>
+</nav>
+
+<header class="hero">
+  <div class="wrap">
+    <span class="kicker">● 零第三方依赖 · 仅 Python 3 标准库 · SQLite 单文件</span>
+    <h1>达人库<span class="grad">智能管理与数据分析</span></h1>
+    <p class="lead">
+      把 TikTok Shop 导出的达人 / 视频 / 直播三张 Excel 表导入 SQLite，自动计算可追溯的核心指标与
+      S–D 五级评级，提供服务端渲染的查询、筛选、看板、达人专属页与配置后台。单进程、单文件数据库，运营本机即可运行。
+    </p>
+    <div class="cta">
+      <a class="btn btn-primary" href="demo/">进入在线演示（合成数据）</a>
+      <a class="btn btn-ghost" href="https://github.com/Leo-liz/daren-library">查看源码 ↗</a>
+      <a class="btn btn-ghost" href="#start">本地运行指南</a>
+    </div>
+
+    <div class="stats">
+      <div class="stat"><div class="num">160</div><div class="lbl">演示达人数（合成）</div></div>
+      <div class="stat"><div class="num">31.2 亿</div><div class="lbl">演示 Σ 历史 GMV（VND）</div></div>
+      <div class="stat"><div class="num">21</div><div class="lbl">每达人可追溯指标</div></div>
+      <div class="stat"><div class="num">≈78s</div><div class="lbl">真实 6.4 万行三表全链路</div></div>
+    </div>
+  </div>
+</header>
+
+<section id="features">
+  <div class="wrap">
+    <h2>核心能力</h2>
+    <p class="sub">从原始 Excel 到可决策的评级看板，全链路标准库实现，无构建步骤、无外部服务。</p>
+    <div class="grid">
+      <div class="card"><h3><span class="ico">▤</span>三表导入</h3><p>达人 / 视频 / 直播维度 Excel 导入；坏行隔离（行号 + 原因）；重复导入按稳定主键覆盖并留痕批次；真实日期格式（含 <code class="inline-code">YYYY/MM/DD/ HH:MM</code> 变体）全兼容。</p></div>
+      <div class="card"><h3><span class="ico">∑</span>可追溯指标</h3><p>历史 GMV、合作后 GMV、出单件数、视频/直播归因 GMV、历史 ROI、费比 ROI、五级 ROI。每项指标记录 <code class="inline-code">source_table / source_field / source_batches</code>，可回查原始行。</p></div>
+      <div class="card"><h3><span class="ico">★</span>S–D 五级评级</h3><p>外置 <code class="inline-code">config/rating_rules.json</code> 驱动权重 / 阈值 / 公式，后台可改并逐键留痕；全库 min-max 归一 + 加权评分；缺失指标按可用权重重归一。</p></div>
+      <div class="card"><h3><span class="ico">◷</span>多时间维度</h3><p>日 / 周 / 月 / 年 / 总聚合。达人表为期间快照；视频 / 直播按 UTC+7 行日期聚合，支持粒度切换。</p></div>
+      <div class="card"><h3><span class="ico">◈</span>达人专属页</h3><p>BD 跟进记录、视频 / 直播坑位费、自然流 / 付费流佣金、自定义评级区间、自定义标签与备注。列表与看板中凡出现达人名字均带评级 + 备注。</p></div>
+      <div class="card"><h3><span class="ico">▦</span>数据看板</h3><p>达人数、Σ 联盟 GMV、视频 / 直播归因 GMV、S–D 分布、GMV / 出单件数双 TOP 榜、视频与直播趋势表，一屏掌握盘面。</p></div>
+      <div class="card"><h3><span class="ico">⚙</span>配置后台</h3><p><code class="inline-code">/config</code> 页改评级权重 / 阈值并留痕；<code class="inline-code">/recompute?full=1</code> 全量重算；增量重算队列仅刷新受影响达人。</p></div>
+      <div class="card"><h3><span class="ico">⇄</span>平台适配层</h3><p><code class="inline-code">adapters.py</code> 抽象 DataAdapter：TikTok 手动导入已实现，Shopee 为占位（<code class="inline-code">NotImplementedError</code>），后续接入不改主流程。</p></div>
+      <div class="card"><h3><span class="ico">⌗</span>对比与导出</h3><p>多达人并排对比；列表 / 看板结果一键导出带 BOM 的 CSV（与页面同一查询与排序）；未合作达人计算器接口占位。</p></div>
+    </div>
+  </div>
+</section>
+
+<section id="screens">
+  <div class="wrap">
+    <h2>界面一览</h2>
+    <p class="sub">以下截图来自真实应用（服务端渲染 HTML + 原生 JS），数据为合成演示样例。</p>
+    <div class="shots">
+      <div class="shot"><img src="assets/img/01-list.png" alt="达人列表：筛选、评级徽章、标签备注、GMV 与出单件数"><div class="cap"><b>达人列表</b> — 名称/等级/期间/GMV 区间筛选与排序；每行内联评级徽章 + 标签 + 备注；支持勾选对比与 CSV 导出。</div></div>
+      <div class="shot"><img src="assets/img/02-dashboard.png" alt="数据看板：GMV、等级分布、双 TOP 榜、视频直播趋势"><div class="cap"><b>数据看板</b> — Σ 联盟 GMV、视频/直播归因 GMV、S–D 分布、GMV 与出单件数双 TOP 10、视频/直播趋势表。</div></div>
+      <div class="shot"><img src="assets/img/03-creator.png" alt="达人专属页：指标、评级依据、视频直播明细、跟进与成本"><div class="cap"><b>达人专属页</b> — 全指标 + 评级依据展开、视频/直播明细、坑位费与佣金补录、BD 跟进与标签备注。</div></div>
+      <div class="shot"><img src="assets/img/04-config.png" alt="配置后台：评级权重与阈值可改并留痕"><div class="cap"><b>配置后台</b> — 评级权重 / 阈值 / 公式后台可改，逐键留痕变更历史。</div></div>
+    </div>
+  </div>
+</section>
+
+<section id="arch">
+  <div class="wrap">
+    <h2>架构</h2>
+    <p class="sub">三层极简结构：Excel 源 → 标准库导入/计算 → 服务端渲染 Web。无框架、无构建、无外部依赖。</p>
+    <div class="arch">
+      <div class="row">
+        <div class="node src"><div class="t">TikTok 导出 Excel</div><div class="d">达人 / 视频 / 直播三表<br>真实日期格式与地区数字</div></div>
+        <div class="node src"><div class="t">合成 Fixtures</div><div class="d">fixtures/generate_fixtures.py<br>确定性合成样例（测试/演示）</div></div>
+        <div class="node src"><div class="t">配置 rating_rules.json</div><div class="d">权重 / 阈值 / ROI 公式<br>后台可改 + 留痕</div></div>
+      </div>
+      <div class="flow">▼</div>
+      <div class="row">
+        <div class="node core"><div class="t">importer.py</div><div class="d">批量 UPSERT + 分批事务<br>坏行隔离 + 批次留痕</div></div>
+        <div class="node core"><div class="t">metrics.py</div><div class="d">集合 SQL 聚合<br>21 指标可追溯</div></div>
+        <div class="node core"><div class="t">rating.py</div><div class="d">min-max 归一 + 加权<br>S–D 五档 + 依据</div></div>
+      </div>
+      <div class="flow">▼</div>
+      <div class="row">
+        <div class="node out"><div class="t">SQLite 单文件库</div><div class="d">schema.sql · raw_* 追溯层<br>metrics / ratings / costs / 标签备注</div></div>
+        <div class="node out"><div class="t">web.py（http.server）</div><div class="d">服务端渲染 HTML + 原生 JS<br>列表/看板/达人页/配置/计算器</div></div>
+        <div class="node out"><div class="t">浏览器 127.0.0.1</div><div class="d">查询 · 筛选 · 对比 · 导出 CSV<br>后台改规则 + 重算</div></div>
+      </div>
+    </div>
+    <div class="callout">
+      <p><b>性能：</b>批量化 <code class="inline-code">executemany</code> + 分批事务 + 按 <code class="inline-code">creator_key</code> 的集合 SQL 聚合，使真实规模
+      （64,657 / 64,875 / 6,831 行三表）全量导入 + 8 万达人指标重算 + 评级全链路约 <b>78 秒</b>完成（优化前外推 ≥ 27 小时）。</p>
+    </div>
+  </div>
+</section>
+
+<section id="metrics">
+  <div class="wrap">
+    <h2>指标口径与评级</h2>
+    <p class="sub">所有口径在 <code class="inline-code">docs/METRICS_AND_RATING.md</code> 中定义；演示数据评级分布如下。</p>
+    <table>
+      <thead><tr><th>指标</th><th>口径</th><th>缺失处理</th></tr></thead>
+      <tbody>
+        <tr><td>历史 GMV</td><td>联盟 GMV（达人表期间聚合）</td><td>无源行 → null</td></tr>
+        <tr><td>合作后 GMV</td><td>定向合作 GMV</td><td>无源行 → null</td></tr>
+        <tr><td>历史出单件数</td><td>联盟商品成交件数</td><td>无源行 → null</td></tr>
+        <tr><td>视频 / 直播归因 GMV</td><td>Σ 行级归因 GMV（UTC+7 行日期）</td><td>无源行 → null</td></tr>
+        <tr><td>历史 ROI</td><td>预计佣金 / 合作成本</td><td>成本缺失或 0 → null（显示"待补录"，不为 0）</td></tr>
+        <tr><td>费比 ROI</td><td>合作后 GMV / 合作成本</td><td>成本缺失或 0 → null</td></tr>
+        <tr><td>单/总 视频 ROI、单/总 直播 ROI</td><td>对应粒度归因 GMV / 坑位费</td><td>任一应计明细缺坑位费 → null</td></tr>
+      </tbody>
+    </table>
+    <div class="callout">
+      <p><b>评级 = </b>Σ(归一分 × 有效指标权重) / Σ(有效指标权重)，归一采用全库 min-max；五档阈值
+      <span class="grade g-S">S</span> ≥80、<span class="grade g-A">A</span> 60–80、<span class="grade g-B">B</span> 40–60、<span class="grade g-C">C</span> 20–40、<span class="grade g-D">D</span> &lt;20。
+      当前权重 0.45 / 0.25 / 0.30 标注"暂定"，待业务正式规则确认；后台可改无需改代码。</p>
+    </div>
+    <div class="callout warn">
+      <p><b>真实数据提示：</b>真实经营数据 GMV 极端长尾，min-max 归一在真实分布下区分度有限（多数达人落 D）。
+      演示数据为合成分布以便展示五档。业务正式评级规则确认前，S–D 看板建议结合原始指标使用。</p>
+    </div>
+  </div>
+</section>
+
+<section id="start">
+  <div class="wrap">
+    <h2>快速上手</h2>
+    <p class="sub">克隆仓库，两条命令跑起来。默认仅绑定 127.0.0.1。</p>
+<pre><code>git clone https://github.com/Leo-liz/daren-library.git
+cd daren-library
+
+# 一键启动（自动初始化空库）
+python web.py --db daren_library.db --config config/rating_rules.json --host 127.0.0.1 --port 8000
+
+# 或用合成样例体验完整链路
+python importer.py creator fixtures/creator_good.xlsx --db demo.db
+python importer.py video   fixtures/video_good.xlsx   --db demo.db
+python importer.py live    fixtures/live_good.xlsx     --db demo.db
+python metrics.py --db demo.db
+python rating.py  --db demo.db
+python web.py --db demo.db --config config/rating_rules.json --port 8000</code></pre>
+    <div class="callout">
+      <p><b>导入退出码：</b><code class="inline-code">0</code> 全合格 / <code class="inline-code">2</code> 有坏行被隔离 / <code class="inline-code">1</code> 致命错误。
+      坏行明细以 UTF-8 JSON 输出（行号 + 原因），Windows GBK 管道亦可读。</p>
+    </div>
+    <div class="callout warn">
+      <p><b>安全边界：</b>本应用无认证 / CSRF，设计为单机 <code class="inline-code">127.0.0.1</code> 运行，<b>请勿暴露到局域网或公网</b>。
+      仓库内 fixtures 与在线演示均为合成数据，不含真实经营数据。</p>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <span>达人库智能管理与数据分析 · Daren Library</span>
+    <span class="spacer"></span>
+    <a href="https://github.com/Leo-liz/daren-library">源码 ↗</a>
+    <a href="demo/">在线演示</a>
+    <a href="https://github.com/Leo-liz/daren-library/blob/main/docs/USAGE.md">接口文档</a>
+  </div>
+</footer>
+
+</body>
+</html>

@@ -1,0 +1,10 @@
+{
+  "description": "INC-2 五档评级专用合成数据，不对应任何真实达人或经营数据",
+  "profiles": [
+    {"name": "alpha", "historical_gmv": 100, "sold_items": 100, "post_collaboration_gmv": 100},
+    {"name": "beta", "historical_gmv": 75, "sold_items": 75, "post_collaboration_gmv": 75},
+    {"name": "gamma", "historical_gmv": 100, "sold_items": 0, "post_collaboration_gmv": 0},
+    {"name": "delta", "historical_gmv": 25, "sold_items": 25, "post_collaboration_gmv": 25},
+    {"name": "epsilon", "historical_gmv": 0, "sold_items": 0, "post_collaboration_gmv": 0}
+  ]
+}

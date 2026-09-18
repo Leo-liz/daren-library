@@ -1,0 +1,77 @@
+{
+  "version": 1,
+  "status": "暂定",
+  "calculator_formula": null,
+  "score_range": {
+    "min": 0,
+    "max": 100,
+    "status": "暂定"
+  },
+  "missing_metric_policy": {
+    "value": "exclude_and_renormalize",
+    "description": "缺失指标不计分，按该达人其余可用指标权重重新归一；全部缺失时得分为 0。",
+    "status": "暂定"
+  },
+  "available_metrics": {
+    "historical_gmv": {"label": "历史 GMV", "normalization": "min_max", "status": "暂定"},
+    "sold_items": {"label": "历史出单件数", "normalization": "min_max", "status": "暂定"},
+    "post_collaboration_gmv": {"label": "合作后 GMV", "normalization": "min_max", "status": "暂定"},
+    "historical_roi": {"label": "历史 ROI", "normalization": "min_max", "status": "暂定"},
+    "cost_ratio_roi": {"label": "费比 ROI", "normalization": "min_max", "status": "暂定"}
+  },
+  "weights": {
+    "historical_gmv": {"value": 0.45, "status": "暂定"},
+    "sold_items": {"value": 0.25, "status": "暂定"},
+    "post_collaboration_gmv": {"value": 0.30, "status": "暂定"}
+  },
+  "tiers": [
+    {"grade": "S", "min_score": 80, "max_score": 100, "max_inclusive": true, "status": "暂定"},
+    {"grade": "A", "min_score": 60, "max_score": 80, "max_inclusive": false, "status": "暂定"},
+    {"grade": "B", "min_score": 40, "max_score": 60, "max_inclusive": false, "status": "暂定"},
+    {"grade": "C", "min_score": 20, "max_score": 40, "max_inclusive": false, "status": "暂定"},
+    {"grade": "D", "min_score": 0, "max_score": 20, "max_inclusive": false, "status": "暂定"}
+  ],
+  "formulas": {
+    "normalization": {"expression": "(指标值 - 全库最小值) / (全库最大值 - 全库最小值) * 100；最大值等于最小值时归一分为 50", "status": "暂定"},
+    "rating_score": {"expression": "sum(归一分 * 有效指标权重) / sum(有效指标权重)", "status": "暂定"},
+    "historical_roi": {"expression": "预计佣金 / 合作成本；合作成本缺失或为 0 时为 null", "status": "暂定"},
+    "cost_ratio_roi": {"expression": "合作后 GMV / 合作成本；合作成本缺失或为 0 时为 null", "status": "暂定"}
+  },
+  "roi_formulas": {
+    "creator_total": {
+      "expression": "预计佣金 / 合作成本",
+      "numerator": "estimated_commission_vnd",
+      "denominator": "collaboration_cost_vnd",
+      "multiplier": 1,
+      "status": "暂定"
+    },
+    "video_total": {
+      "expression": "Σ视频归因 GMV / Σ视频坑位费",
+      "numerator": "attributed_gmv_vnd",
+      "denominator": "slot_fee_vnd",
+      "multiplier": 1,
+      "status": "暂定"
+    },
+    "video_single": {
+      "expression": "该视频归因 GMV / 该视频坑位费",
+      "numerator": "attributed_gmv_vnd",
+      "denominator": "slot_fee_vnd",
+      "multiplier": 1,
+      "status": "暂定"
+    },
+    "live_total": {
+      "expression": "Σ直播归因 GMV / Σ直播坑位费",
+      "numerator": "attributed_gmv_vnd",
+      "denominator": "slot_fee_vnd",
+      "multiplier": 1,
+      "status": "暂定"
+    },
+    "live_single": {
+      "expression": "该直播归因 GMV / 该直播坑位费",
+      "numerator": "attributed_gmv_vnd",
+      "denominator": "slot_fee_vnd",
+      "multiplier": 1,
+      "status": "暂定"
+    }
+  }
+}
